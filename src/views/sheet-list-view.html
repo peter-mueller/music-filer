@@ -1,0 +1,73 @@
+<html><head></head><body><div hidden="" by-polymer-bundler=""><script>
+  /** @polymerBehavior Polymer.PaperItemBehavior */
+  Polymer.PaperItemBehaviorImpl = {
+    hostAttributes: {
+      role: 'option',
+      tabindex: '0'
+    }
+  };
+
+  /** @polymerBehavior */
+  Polymer.PaperItemBehavior = [
+    Polymer.IronButtonState,
+    Polymer.IronControlState,
+    Polymer.PaperItemBehaviorImpl
+  ];
+</script><dom-module id="paper-item-shared-styles" assetpath="../../bower_components/paper-item/"><template><style>:host, .paper-item{display:block;position:relative;min-height:var(--paper-item-min-height, 48px);padding:0px 16px;}.paper-item{@apply --paper-font-subhead;border:none;outline:none;background:white;width:100%;text-align:left;}:host([hidden]), .paper-item[hidden]{display:none !important;}:host(.iron-selected), .paper-item.iron-selected{font-weight:var(--paper-item-selected-weight, bold);@apply --paper-item-selected;}:host([disabled]), .paper-item[disabled]{color:var(--paper-item-disabled-color, var(--disabled-text-color));@apply --paper-item-disabled;}:host(:focus), .paper-item:focus{position:relative;outline:0;@apply --paper-item-focused;}:host(:focus):before, .paper-item:focus:before{@apply --layout-fit;background:currentColor;content:'';opacity:var(--dark-divider-opacity);pointer-events:none;@apply --paper-item-focused-before;}</style></template></dom-module><dom-module id="paper-item" assetpath="../../bower_components/paper-item/"><template><style include="paper-item-shared-styles"></style><style>:host{@apply --layout-horizontal;@apply --layout-center;@apply --paper-font-subhead;@apply --paper-item;}</style><slot></slot></template><script>
+    Polymer({
+      is: 'paper-item',
+
+      behaviors: [
+        Polymer.PaperItemBehavior
+      ]
+    });
+  </script></dom-module><dom-module id="paper-item-body" assetpath="../../bower_components/paper-item/"><template><style>:host{overflow:hidden;@apply --layout-vertical;@apply --layout-center-justified;@apply --layout-flex;}:host([two-line]){min-height:var(--paper-item-body-two-line-min-height, 72px);}:host([three-line]){min-height:var(--paper-item-body-three-line-min-height, 88px);}:host > ::slotted(*){overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}:host > ::slotted([secondary]){@apply --paper-font-body1;color:var(--paper-item-body-secondary-color, var(--secondary-text-color));@apply --paper-item-body-secondary;}</style><slot></slot></template><script>
+    Polymer({
+      is: 'paper-item-body'
+    });
+  </script></dom-module><dom-module id="sheet-list" assetpath="../sheet-list/"><template><style>:host{display:block;}a{text-decoration:none;}</style><template is="dom-repeat" items="[[sheets]]"><a href="/#/sheets/[[item.id]]" tabindex="-1"><paper-item><paper-item-body two-line=""><span>[[item.title]]</span> <span secondary="">[[item.author]]</span></paper-item-body></paper-item></a></template></template><script>
+        class SheetList extends Polymer.Element {
+
+            static get is() { return 'sheet-list'; }
+
+            static get properties() {
+                return {
+                    sheets: {
+                        type: Array,
+                        value: []
+                    }
+                };
+            }
+        }
+
+        window.customElements.define(SheetList.is, SheetList);
+    </script></dom-module></div><dom-module id="sheet-list-view"><template><style>:host{display:block;height:200px;}</style><sheet-list sheets="[[sheets]]"></sheet-list></template><script>
+        class SheetListView extends Polymer.Element {
+
+            static get is() { return 'sheet-list-view'; }
+
+            static get properties() {
+                return {
+                    route: Object,
+                    sheets: {
+                        type: Array,
+                        value: [],
+                    },
+                    active: {
+                        type: Boolean,
+                        observer: '_changeActive'
+                    }
+                };
+            }
+
+            _changeActive(newActive, oldActive) {
+                if (newActive == true) {
+                    let data = localStorage.getItem('sheets');
+                    let sheets = JSON.parse(data);
+                    this.set('sheets', sheets);
+                }
+            }
+        }
+
+        window.customElements.define(SheetListView.is, SheetListView);
+    </script></dom-module></body></html>
