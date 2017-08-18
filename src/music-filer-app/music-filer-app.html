@@ -1,0 +1,83 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/app-route/app-location.html">
+
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../qr-scanner/qr-scanner.html">
+
+<dom-module id="music-filer-app">
+  <template>
+    <style>
+       :host {}
+
+      qr-scanner {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        height: 128px;
+      }
+    </style>
+
+    <!-- app-location binds to the app's URL -->
+    <app-location route="{{route}}" use-hash-as-path></app-location>
+
+    <!-- this app-route manages the top-level routes -->
+    <app-route route="{{route}}" pattern="/:view" data="{{routeData}}" tail="{{subroute}}"></app-route>
+
+    <iron-pages selected="[[view]]" attr-for-selected="name" selected-attribute="active">
+      <sheet-list-view name=""></sheet-list-view>
+      <sheet-detail-view name="sheets" route="{{subroute}}"></sheet-detail-view>
+    </iron-pages>
+    <qr-scanner preview on-scan="onScanID"></qr-scanner>
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class MusicFilerApp extends Polymer.Element {
+      static get is() { return 'music-filer-app'; }
+      static get properties() {
+        return {
+          view: {
+            type: String,
+            observer: '_changeView'
+          }
+        };
+      }
+      static get observers() {
+        return [
+          '_changeRouteView(routeData.view)'
+        ]
+      }
+
+      _changeRouteView(view) {
+        if (!view) {
+          this.set('route.path', '/');
+        }
+        this.set('view', view || '');
+      }
+
+      _changeView(newView, oldView) {
+        let resolvedUrl = this.resolveUrl({
+          '': '../views/sheet-list-view.html',
+          'sheets': '../views/sheet-detail-view.html'
+        }[newView]);
+
+        // import the file
+        Polymer.importHref(
+          resolvedUrl,
+          null,  /* callback for successful load -- usually not needed */
+          null, /* for example, display 404 page */
+          true); /* make import async */
+      }
+      onScanID(e) {
+        this.set('route.path', '/sheets/' + e.detail);
+      }
+    }
+
+    window.customElements.define(MusicFilerApp.is, MusicFilerApp);
+  </script>
+</dom-module>

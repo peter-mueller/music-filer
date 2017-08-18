@@ -1,0 +1,95 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../sheet-detail/sheet-detail.html">
+
+<!--
+`<sheet-detail-view>` is Description
+
+@element sheet-detail-view
+-->
+<dom-module id="sheet-detail-view">
+    <template>
+        <style>
+             :host {
+                display: block;
+                height: 200px;
+            }
+        </style>
+
+        <app-route route="{{route}}" pattern="/:sheetId" data="{{routeData}}"></app-route>
+
+        <sheet-detail sheet-id="[[model.id]]" title="{{model.title}}" author="{{model.author}}"></sheet-detail>
+
+        <paper-button on-click="save">SPEICHERN</paper-button>
+
+    </template>
+
+    <script>
+        class SheetDetailView extends Polymer.Element {
+
+            static get is() { return 'sheet-detail-view'; }
+
+            static get properties() {
+                return {
+                    route: {
+                        type: Object,
+                    },
+                    model: {
+                        type: Object,
+                        value: {}
+                    }
+                };
+            }
+
+            static get observers() {
+                return [
+                    '_changeId(routeData.sheetId)'
+                ]
+            }
+
+            save() {
+                if (!this.model.title) {
+                    return;
+                }
+                let data = localStorage.getItem('sheets') || "[]";
+                let sheets = JSON.parse(data);
+                let index = sheets.findIndex(sheet => sheet.id == this.model.id);
+                if (index == -1) {
+                    sheets.push(this.model);
+                } else {
+                    sheets[index] = this.model;
+                }
+                localStorage.setItem('sheets', JSON.stringify(sheets));
+            }
+
+            _changeId(newSheetId) {
+                if (!newSheetId) {
+                    this.set('model', {});
+                    return;
+                }
+                let data = localStorage.getItem('sheets');
+                if (!data) {
+                    this.set('model', {id: newSheetId});
+                    return;
+                }
+                let sheets = JSON.parse(data);
+                let sheet = sheets.find(sheet => sheet.id == newSheetId);
+                if (!sheet) {
+                    this.set('model', {id: newSheetId});
+                    return;
+                }
+                let m = {};
+                m.id = sheet.id || newSheetId;
+                m.title = sheet.title || "";
+                m.author = sheet.author || "";
+                this.set('model', m);
+            }
+        }
+
+        window.customElements.define(SheetDetailView.is, SheetDetailView);
+    </script>
+</dom-module>

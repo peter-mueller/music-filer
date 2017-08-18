@@ -1,0 +1,58 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<!--
+`<sheet-detail>` is Description
+
+@element sheet-detail
+-->
+<dom-module id="sheet-detail">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+            paper-input {
+                width: 100%;
+            }
+
+            #id {
+                @apply --paper-font-code1;
+            }
+        </style>
+
+        <span id="id">ID: [[sheetId]]</span>
+        <paper-input label="Titel" value="{{title}}"></paper-input>
+        <paper-input label="Komponist" value="{{author}}"></paper-input>
+
+    </template>
+
+    <script>
+        class SheetDetail extends Polymer.Element {
+
+            static get is() { return 'sheet-detail'; }
+
+            static get properties() {
+                return {
+                    sheetId: {
+                        type: String,
+                        notify: true
+                    },
+                    title: {
+                        type: String,
+                        notify: true
+                    },
+                    author: {
+                        type: String,
+                        notify: true
+                    }
+                };
+            }
+        }
+
+        window.customElements.define(SheetDetail.is, SheetDetail);
+    </script>
+</dom-module>

@@ -1,0 +1,77 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<script type="text/javascript" src="instascan.min.js"></script>
+<!--
+`<qr-scanner>` is Description
+
+@element qr-scanner
+-->
+<dom-module id="qr-scanner">
+    <template>
+        <style>
+             :host {
+                display: block;
+            }
+            video {
+                background-color: lightgray;
+                height: 100%;
+            }
+        </style>
+        
+        <video hidden$="[[!preview]]" id="preview">
+        </video>
+
+    </template>
+    <script>
+        class QrScanner extends Polymer.Element {
+
+            static get is() { return 'qr-scanner'; }
+            static get properties() {
+                return {
+                    scanner: Object,
+                    preview: {
+                        type: Boolean,
+                        value: false,
+                    },
+                }
+            }
+
+            connectedCallback() {
+                super.connectedCallback();
+                let scanner = new Instascan.Scanner({
+                    video: this.$.preview,
+                    mirror: false,
+                    scanPeriod: 10,
+                });
+                Instascan.Camera.getCameras().then(function (cameras) {
+                    if (cameras.length > 0) {
+                        scanner.start(cameras[0]);
+                    } else {
+                        document.body.innerHTML = 'No cameras found.';
+                    }
+                }).catch(function (e) {
+                    console.error(e);
+                });
+                scanner.addListener('scan', content => this.onScan({detail: content}))
+                this.scanner = scanner;
+            }
+
+            disconnectedCallback() {
+                let finish = super.disconnectedCallback;
+                this.scanner.stop().then(
+                    function () {
+                        finish();
+                    }
+                );
+            }
+
+            onScan(e) {
+                let event = new CustomEvent('scan', {detail: e.detail});
+                this.dispatchEvent(event);
+            }
+
+        }
+
+        window.customElements.define(QrScanner.is, QrScanner);
+    </script>
+</dom-module>

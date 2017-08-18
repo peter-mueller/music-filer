@@ -1,0 +1,50 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-repeat.html">
+
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item-body.html">
+<!--
+`<sheet-list>` is Description
+
+@element sheet-list
+-->
+<dom-module id="sheet-list">
+    <template>
+        <style>
+             :host {
+                display: block
+            }
+            a {
+                text-decoration: none;
+            }
+        </style>
+        <template is="dom-repeat" items="[[sheets]]">
+            <a href="/#/sheets/[[item.id]]" tabindex="-1">
+                <paper-item>
+                    <paper-item-body two-line>
+                        <span>[[item.title]]</span>
+                        <span secondary>[[item.author]]</span>
+                    </paper-item-body>
+                </paper-item>
+            </a>
+        </template>
+    </template>
+
+    <script>
+        class SheetList extends Polymer.Element {
+
+            static get is() { return 'sheet-list'; }
+
+            static get properties() {
+                return {
+                    sheets: {
+                        type: Array,
+                        value: []
+                    }
+                };
+            }
+        }
+
+        window.customElements.define(SheetList.is, SheetList);
+    </script>
+</dom-module>

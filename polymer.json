@@ -1,0 +1,27 @@
+{
+  "entrypoint": "index.html",
+  "shell": "src/music-filer-app/music-filer-app.html",
+  "fragments": [
+    "src/views/sheet-list-view.html",
+    "src/views/sheet-detail-view.html"
+  ],
+  "sources": [
+    "src/qr-scanner/instascan.min.js"
+  ],
+  "extraDependencies": [
+    "!src/qr-scanner/instascan.min.js"
+  ],
+  "lint": {
+    "rules": [
+      "polymer-2"
+    ]
+  },
+  "builds": [
+    {
+      "preset": "es6-bundled",
+      "js": {
+        "minify": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "name": "music-filer",
+  "short_name": "music-filer",
+  "start_url": "/",
+  "display": "standalone"
+}

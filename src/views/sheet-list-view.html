@@ -1,0 +1,54 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../sheet-list/sheet-list.html">
+
+<!--
+`<sheet-detail-view>` is Description
+
+@element sheet-detail-view
+-->
+<dom-module id="sheet-list-view">
+    <template>
+        <style>
+             :host {
+                display: block;
+                height: 200px;
+            }
+        </style>
+
+        <sheet-list sheets="[[sheets]]"></sheet-list>
+    </template>
+
+    <script>
+        class SheetListView extends Polymer.Element {
+
+            static get is() { return 'sheet-list-view'; }
+
+            static get properties() {
+                return {
+                    route: Object,
+                    sheets: {
+                        type: Array,
+                        value: [],
+                    },
+                    active: {
+                        type: Boolean,
+                        observer: '_changeActive'
+                    }
+                };
+            }
+
+            _changeActive(newActive, oldActive) {
+                if (newActive == true) {
+                    let data = localStorage.getItem('sheets');
+                    let sheets = JSON.parse(data);
+                    this.set('sheets', sheets);
+                }
+            }
+        }
+
+        window.customElements.define(SheetListView.is, SheetListView);
+    </script>
+</dom-module>
