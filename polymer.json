@@ -19,6 +19,7 @@
   "builds": [
     {
       "preset": "es6-bundled",
+      "basePath": "/music-filer/",
       "js": {
         "minify": false
       }
